@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 
 # user editable vars
-projectRoot = "/Users/deepak/Downloads/empty_proj/"
+projectRoot = "/Users/deepak/Documents/PythonFiles/data/empty_proj"
 outputFileName = "scanResults"
-outputDirectory = "/Users/deepak/Downloads/empty_proj/"
+outputDirectory = "/Users/deepak/Documents/PythonFiles/data/outputFiles"
 
 # strutcture data used to start DataFrame w/ a single blank data row
 data = [('', '', '', '', '')]
