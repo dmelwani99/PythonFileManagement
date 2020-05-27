@@ -2,11 +2,9 @@ import glob, os
 import numpy as np
 import pandas as pd
 
-def addToDataFrame(file, dataframe):
-        dataframe
-
 # user editable vars
 projectRoot = "/Users/deepak/Documents/PythonFiles/data/empty_proj"
+extensionsToSearch = ['.nii.gz', '.json', '.gii']
 labelsToParse = ['sub', 'ses', 'task', 'run']
 outputFileName = "scanResults"
 outputDirectory = "/Users/deepak/Documents/PythonFiles/data/outputFiles"
@@ -16,23 +14,11 @@ dfObj = pd.DataFrame(columns=['file', 'parent', 'child'] + labelsToParse + ['oth
 
 print('Beginning search in ' + projectRoot)
 
-print('Processing .nii.gz Files now')
-
-niigzFiles = glob.glob(projectRoot + '/**/*.nii.gz', recursive=True)
-for name in niigzFiles:
-    dfObj.at[(name.replace(projectRoot, ".")), 'file'] = os.path.basename(name)
-
-print('Processing .json Files now')
-
-jsonFiles = glob.glob(projectRoot + '/**/*.json', recursive=True)
-for name in jsonFiles:
-    dfObj.at[(name.replace(projectRoot, ".")), 'file'] = os.path.basename(name)
-
-print('Processing .gii Files now')
-
-giiFiles = glob.glob(projectRoot + '/**/*.gii', recursive=True)
-for name in giiFiles:
-    dfObj.at[(name.replace(projectRoot, ".")), 'file'] = os.path.basename(name)
+for extension in extensionsToSearch:
+    print('Searching for ' + extension + ' files now')
+    files = glob.glob(projectRoot + '/**/*' + extension, recursive=True)
+    for name in files:
+        dfObj.at[(name.replace(projectRoot, ".")), 'file'] = os.path.basename(name)
 
 dfObj.drop_duplicates(inplace=True)
 
@@ -50,11 +36,9 @@ for index, row in dfObj.iterrows():
             if info[0] in labelsToParse:
                 dfObj.at[index, info[0]] = info[1]
             else:
-                existingOtherData = dfObj.at[index, 'otherData']
+                existingOtherData = dfObj.at[index, 'otherData'] #todo: condensed-if to check that an empty otherData = nan
                 dfObj.at[index, 'otherData'] = (str(existingOtherData) + 'label: "{}", value: "{}"; '.format(info[0], info[1]))
 
-    if file_extension == '.json': #and find if there is a matching .nii.gz
-        print(fileName) #then get its index and set the otherdata relation
 
 # export as CSV file
 dfObj.to_csv(outputDirectory + outputFileName + '.csv')
